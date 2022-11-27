@@ -6,6 +6,10 @@ import pandas as pd
 
 from rii.loaders import iter_chunks_from_tar_or_csv
 
+aa_substitution_pattern = (
+    r"(?P<gene>[A-Za-z\d]+)_(?P<ref>[A-Za-z]+)(?P<pos>\d+)(?P<seq>[A-Za-z]+)"
+)
+
 METADATA_DTYPES = defaultdict(
     pd.StringDtype,
     {
