@@ -9,7 +9,7 @@ import click
 import pandas as pd
 from tqdm import tqdm
 
-from rii.gisaid import iter_metadata
+from rii.gisaid import iter_metadata, make_query
 
 
 def parse_date_to_week(str_date: str) -> str:
@@ -44,37 +44,31 @@ def enrich_df(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def make_query(location: tuple[str]) -> str:
-    query = []
-    if location:
-        query.append(
-            "("
-            + " or ".join(f"Location.str.contains('{loc}')" for loc in location)
-            + ")"
-        )
-
-    return " and ".join(query)
-
-
 @click.command()
 @click.argument(
     "metadata",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option("--location", multiple=True, help="Substring to filter by Location field")
+@click.option(
+    "--pango-lineage",
+    help="Lineage filter, unix filename-like patterns allowed",
+    multiple=True,
+)
 @click.option("--output", "-o", help="Output basename")
 @click.option("--enrich", "-e", is_flag=True, help="Add computed columns")
 @click.option("--compress", "-c", type=click.Choice(["gz", "xz"]))
 def extract_metadata(
     metadata: Path,
     location: tuple[str],
+    pango_lineage: tuple[str],
     output: Optional[str],
     enrich: bool,
     compress: Optional[Literal["gz", "xz"]],
 ) -> None:
     """Extract, filter and enrich metadata from GISAID metadata dump (.tar.xz achive or .tsv)."""
 
-    query = make_query(location=location)
+    query = make_query(location=location, pango_lineage=pango_lineage)
 
     output_path_items = []
     if output:

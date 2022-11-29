@@ -1,6 +1,3 @@
-import fnmatch
-import functools
-import operator
 import warnings
 from pathlib import Path
 from typing import Literal
@@ -8,6 +5,8 @@ from typing import Literal
 import altair as alt
 import click
 import pandas as pd
+
+from rii.gisaid import make_query
 
 
 @click.command()
@@ -39,7 +38,9 @@ import pandas as pd
     default="variant_region_proportion",
     show_default=True,
 )
-@click.option("--format", type=click.Choice(["svg", "png"]), default="png", show_default=True)
+@click.option(
+    "--format", type=click.Choice(["svg", "png"]), default="png", show_default=True
+)
 @click.option("--table", help="Write pivot table", is_flag=True)
 @click.option("--rii-only", type=bool, default=False, show_default=True, is_flag=True)
 @click.option("--color-scheme", default="reds", show_default=True)
@@ -73,10 +74,7 @@ def plot_variant_region_proportion(
     if rii_only:
         df = df[df["RII"]]
 
-    pango_filters = [
-        df["Pango lineage"].str.fullmatch(fnmatch.translate(pl)) for pl in pango_lineage
-    ]
-    pango_selector = functools.reduce(operator.or_, pango_filters)
+    selected_lineage = df.query(make_query(pango_lineage=pango_lineage))
 
     # Counting
     sequencing_volume = (
@@ -86,8 +84,7 @@ def plot_variant_region_proportion(
         .reset_index()
     )
     selected_pango_lineages = (
-        df[pango_selector]
-        .groupby(["ISO", time_column])["Accession ID"]
+        selected_lineage.groupby(["ISO", time_column])["Accession ID"]
         .agg("count")
         .to_frame("Count")
         .reset_index()

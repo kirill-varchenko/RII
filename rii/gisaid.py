@@ -1,6 +1,7 @@
+import fnmatch
 from collections import defaultdict
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Iterable, Optional
 
 import pandas as pd
 
@@ -34,3 +35,27 @@ def iter_metadata(
         dtype=METADATA_DTYPES,
         chunksize=chunksize,
     )
+
+
+def make_query(
+    location: Optional[Iterable[str]] = None,
+    pango_lineage: Optional[Iterable[str]] = None,
+) -> str:
+    query = []
+    if location:
+        query.append(
+            "("
+            + " or ".join(f"Location.str.contains('{loc}')" for loc in location)
+            + ")"
+        )
+    if pango_lineage:
+        query.append(
+            "("
+            + " or ".join(
+                f"`Pango lineage`.str.fullmatch('{fnmatch.translate(pl)}')"
+                for pl in pango_lineage
+            )
+            + ")"
+        )
+
+    return " and ".join(query)
