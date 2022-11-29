@@ -15,8 +15,7 @@ def iter_chunks_from_tar_or_csv(
             metadata_file = tar.extractfile(tar_member)
             assert metadata_file is not None
             yield from pd.read_csv(metadata_file, iterator=True, **kwargs)
-    elif file.suffix in (".tsv", ".csv"):
-        with open(file, "rb") as metadata_file:
-            yield from pd.read_csv(metadata_file, iterator=True, **kwargs)
+    elif ".tsv" in file.suffixes or ".csv" in file.suffixes:
+        yield from pd.read_csv(file, iterator=True, **kwargs)
     else:
-        raise ValueError(file.suffix)
+        raise ValueError(file.suffixes)

@@ -1,17 +1,23 @@
 # RII
 Скрипты для НИИ гриппа
 
-## extract_russian_metadata
-Экстрактит российские метаданные из выгрузки метаданных GISAID (из распакованного .tsv файла или прямо из архива .tar.xz).
+## extract_metadata
+Экстрактит метаданные из выгрузки метаданных GISAID (из распакованного .tsv файла или прямо из архива .tar.xz).
 
 Использование:
 ```bash
-./extract_russian_metadata.py <имя файла>
+extract_metadata <имя файла>
 ```
 
-Выход: `russian-metadata-YYYY-MM-DD.tsv`
+Список опций:
+```bash
+extract_metadata --help
+```
 
-Добавляются колонки:
+Список фильтров:
+- Location (фильтрация по подстроке, можно указать несколько для соединения ИЛИ)
+
+Добавляются колонки (флаг `--enrich`):
 - ISO (ISO код региона из Virus name)
 - RII (флаг загрузки из НИИ)
 - Collection month
