@@ -10,15 +10,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from rii.gisaid import iter_metadata, make_query
-
-
-def parse_date_to_week(str_date: str) -> str:
-    try:
-        return "{0.year}-W{0.week:02}".format(
-            date.fromisoformat(str_date).isocalendar()
-        )
-    except:
-        return ""
+from rii.helpers import parse_date_to_week
 
 
 def enrich_df(df: pd.DataFrame) -> pd.DataFrame:
