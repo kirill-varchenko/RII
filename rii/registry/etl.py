@@ -65,7 +65,6 @@ def extract(
     pipeline = pdp.PdPipeline(
         [
             pdp.df.fillna(""),
-            pdp.df.applymap(fix_excel_date_formats),
             pdp.df["source_id"] << table,
         ]
     )
@@ -76,6 +75,9 @@ def extract(
     pipeline += pdp.df.replace(r"\s+", " ", regex=True)
     pipeline += pdp.df.applymap(str.strip)
     pipeline += pdp.ColRename(extract_schemes["tables"][table]["rename"])
+    pipeline += pdp.ApplyByCols(
+        extract_schemes.get("fix-dates", []), fix_excel_date_formats
+    )
     pipeline += pdp.Schematize(extract_schemes["columns"])
 
     return pipeline(data)
