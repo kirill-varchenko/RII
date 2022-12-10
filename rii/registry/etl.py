@@ -1,5 +1,5 @@
 import warnings
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Generator, Literal
 
@@ -9,13 +9,24 @@ import pdpipe as pdp
 BASE_DATE = date(1899, 12, 30)
 
 
-def fix_190x_date(value: str) -> str:
+def fix_excel_date_formats(value: str) -> str:
+    # Dates 1900-MM-DD are ages A formatted as dates with A days from base date.
+    # Dates 1905-MM-DD are birth years Y formatted as dates with Y days from base date.
     try:
         d = date.fromisoformat(value)
         if d.year in (1900, 1905):
             return str((d - BASE_DATE).days)
-    except:
+    except ValueError:
         pass
+    # 5-digit numbers N are dates with N days from base date.
+    # 5000 selected as a cutoff to distinguish from 4-digits birth years.
+    try:
+        d = int(value)
+        if d > 5000:
+            return str(BASE_DATE + timedelta(days=d))
+    except ValueError:
+        pass
+
     return value
 
 
@@ -54,7 +65,7 @@ def extract(
     pipeline = pdp.PdPipeline(
         [
             pdp.df.fillna(""),
-            pdp.df.applymap(fix_190x_date),
+            pdp.df.applymap(fix_excel_date_formats),
             pdp.df["source_id"] << table,
         ]
     )
