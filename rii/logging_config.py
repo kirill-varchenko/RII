@@ -30,6 +30,6 @@ LOGGING_CONFIG = {
     "root": {
         "level": "INFO",
         "formatter": "verbose",
-        "handlers": "console",
+        "handlers": ["console"],
     },
 }
