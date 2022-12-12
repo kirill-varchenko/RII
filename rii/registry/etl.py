@@ -78,6 +78,6 @@ def extract(
     pipeline += pdp.ApplyByCols(
         extract_schemes.get("fix-dates", []), fix_excel_date_formats
     )
-    pipeline += pdp.Schematize(extract_schemes["columns"])
+    pipeline += pdp.df.reindex(columns=extract_schemes["columns"])
 
     return pipeline(data)
