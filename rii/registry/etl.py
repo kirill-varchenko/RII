@@ -22,7 +22,7 @@ def fix_excel_date_formats(value: str) -> str:
     # 5000 selected as a cutoff to distinguish from 4-digits birth years.
     try:
         d = int(value)
-        if d > 5000:
+        if 5000 < d < 50000:
             return str(BASE_DATE + timedelta(days=d))
     except ValueError:
         pass
