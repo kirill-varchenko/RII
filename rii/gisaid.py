@@ -1,5 +1,8 @@
 import fnmatch
+import json
 from collections import defaultdict
+from functools import reduce
+from operator import or_
 from pathlib import Path
 from typing import Generator, Iterable, Optional
 
@@ -10,6 +13,14 @@ from rii.loaders import iter_chunks_from_tar_or_csv
 aa_substitution_pattern = (
     r"(?P<gene>[A-Za-z\d]+)_(?P<ref>[A-Za-z]+)(?P<pos>\d+)(?P<seq>[A-Za-z]+)"
 )
+
+PANGO_PATTERNS: dict[str, list[str]] = {
+    "BA.1.*": ["BA.1", "BA.1.*"],
+    "BA.5.*": ["BA.5", "BA.5.*"],
+    "XBB.*": ["XBB", "XBB.*"],
+    "BQ.1.*": ["BQ.1", "BQ.1.*"],
+    "AY.*": ["AY.*"],
+}
 
 METADATA_DTYPES = defaultdict(
     pd.StringDtype,
@@ -59,3 +70,18 @@ def make_query(
         )
 
     return " and ".join(query)
+
+
+def combine_pango(pango: pd.Series) -> pd.Series:
+    combined = pango.copy()
+    for combo, patterns in PANGO_PATTERNS.items():
+        idx = reduce(
+            or_,
+            [
+                combined.str.fullmatch(fnmatch.translate(pattern))
+                for pattern in patterns
+            ],
+        )
+        combined[idx] = combo
+
+    return combined

@@ -9,7 +9,7 @@ import click
 import pandas as pd
 from tqdm import tqdm
 
-from rii.gisaid import iter_metadata, make_query
+from rii.gisaid import combine_pango, iter_metadata, make_query
 from rii.helpers import parse_date_to_week
 
 
@@ -31,6 +31,7 @@ def enrich_df(df: pd.DataFrame) -> pd.DataFrame:
     df["Pango lineage cut"] = df["Pango lineage"].str.extract(
         r"([A-Z]+(?:\.\d+){,2})", expand=True
     )
+    df["Pango lineage combo"] = combine_pango(df["Pango lineage"])
     df["Variant cut"] = df["Variant"].str.extract(r"^\w* (\w+)", expand=True)
 
     return df

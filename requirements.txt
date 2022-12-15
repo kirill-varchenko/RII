@@ -1,4 +1,0 @@
-pandas
-click
-altair
-altair_saver
