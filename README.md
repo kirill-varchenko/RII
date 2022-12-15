@@ -41,3 +41,11 @@ vgarus --help
 ```bash
 plot_variant_region_proportion --help
 ```
+
+## plot_spike_substitutions
+Рисует диаграмму частот АК-замен в Spike по линиям Pango. На вход принимает метаданные .tsv. 
+
+Список опций:
+```bash
+plot_spike_substitutions --help
+```
