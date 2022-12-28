@@ -19,7 +19,7 @@ PANGO_PATTERNS: dict[str, list[str]] = {
     "BA.5.*": ["BA.5", "BA.5.*"],
     "XBB.*": ["XBB", "XBB.*"],
     "BQ.1.*": ["BQ.1", "BQ.1.*"],
-    "AY.*": ["AY.*"],
+    "B.1.617.2 + AY.*": ["AY.*", "B.1.617.2"],
 }
 
 METADATA_DTYPES = defaultdict(
