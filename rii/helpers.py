@@ -28,11 +28,11 @@ def count_frequency(
     groupby = groupby or []
 
     base_name = " ".join(groupby)
-    total_column_name = base_name + " Total"
-    base_column_name = base_name + " " + column
-    count_column_name = base_column_name + " Count"
-    frequency_column_name = base_column_name + " Frequency"
-    cumfreq_column_name = base_column_name + " CumFrequency"
+    total_column_name = (base_name + " Total").lstrip()
+    base_column_name = (base_name + " " + column).lstrip()
+    count_column_name = (base_column_name + " Count").lstrip()
+    frequency_column_name = (base_column_name + " Frequency").lstrip()
+    cumfreq_column_name = (base_column_name + " CumFrequency").lstrip()
 
     if groupby:
         group_totals = (
