@@ -26,6 +26,9 @@ LOGGING_CONFIG = {
             "level": "INFO",
             "propagate": False,
         },
+        "tornado.access": {
+            "level": "WARNING",
+        },
     },
     "root": {
         "level": "INFO",
